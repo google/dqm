@@ -9,7 +9,7 @@ Data Quality Manager (aka _DQM_) is a platform dedicated to data quality issues 
 
 DQM is made of two components:
 
-- A __backend__ (Python, Django) to store/execute/historize checks.
+- A __backend__ (Python, Django) to execute/store checks.
 - A __frontend__ (Typescript, VueJS) to allow users to plan/execute/monitor checks.
 
 
@@ -22,27 +22,39 @@ A typical DQM deployment relies on [Google Cloud Platform](https://cloud.google.
 - A GCP project (create one following [this guide](https://cloud.google.com/resource-manager/docs/creating-managing-projects) if needed).
 - The [Google Cloud SDK](https://cloud.google.com/sdk/docs) (command line interface) installed on your local machine.
 - The [pipenv](https://github.com/pypa/pipenv) Python package manager installed on your local machine.
+- The Node.js [npm](https://www.npmjs.com/get-npm) is installed on your local machine.
 
 ### Getting the code
 
-Clone this repository and make sure you cd the `backend` directory (important for next steps):
+Clone this repository:
 
 ```
 git clone https://github.com/google/dqm.git
-cd dqm/backend
 ```
 
-### GCP setup
-
-First, activate required APIs, setup database, create App Engine app and get your service account key file by executing the following commands (replace `[YOUR GCP PROJECT ID]` by your actual project ID):
+### Building the frontend
 
 ```shell
+cd dqm/frontend
+npm install
+npm run build
+```
+
+_Note_ – DQM is configured to export the build to `backend/www` (because the frontend build is intended to ship together with the backend to App Engine, where it will be served "statically").
+
+
+### GCP project setup
+
+Activate required APIs, setup database, create App Engine app and get your service account key file by executing the following commands (replace `[YOUR GCP PROJECT ID]` by your actual project ID):
+
+```shell
+cd ../backend                                             # Make sure you cd the dqm/backend dir
 export gcpproject="[YOUR GCP PROJECT ID]"
 
 gcloud config set project $gcpproject
 gcloud services enable analytics.googleapis.com
 gcloud services enable analyticsreporting.googleapis.com
-gcloud sql instances create dqm   # --region=REGION; default="us-central"
+gcloud sql instances create dqm                           # --region=REGION; default="us-central"
 gcloud sql databases create dqm --instance=dqm
 gcloud sql users create dqmuser --instance=dqm
 gcloud app create
@@ -52,19 +64,19 @@ gcloud iam service-accounts keys create ./key.json \
 
 _Note_ – Of course, you can change values/names the lines above, but keep in mind that the `key.json` file will have to be deployed to App Engine, so it __must__ stay inside the `backend` dir anyway.
 
-### Deployment
+### Database setup
 
 Because App Engine won't be able to handle [Django database migrations](https://docs.djangoproject.com/en/3.0/topics/migrations/) (~ tables creation) on the production environment, you'll have to run these migrations from your local machine __before__ actually deploying.
 
 #### Installing Python dependencies
 
-Within the `backend` directory, run:
+First, get the required Python packages thanks to pipenv:
 
 ```shell
 pipenv install --dev
 ```
 
-#### Preparing the database
+#### Creating database tables
 
 Set the following environment variables on your local machine:
 
@@ -76,7 +88,7 @@ export DQM_CLOUDSQL_USER="dqmuser"
 
 _Note_ – `DQM_CLOUDSQL_CONNECTION_NAME` value should be something like `[YOUR GCP PROJECT ID]:us-central1:dqm`. If you're not sure, open the [GCP console](https://console.cloud.google.com/), navigate to the SQL module and copy the value of the _Instance connection name_ field.
 
-Then, install `cloud_sql_proxy` following [this procedure](https://cloud.google.com/sql/docs/mysql/connect-admin-proxy#install) (basically, download the binary and make it executable). Once installed, you can launch the `cloud_sql_proxy` daemon, which will root your local app database traffic to your production GCP SQL database.
+Then, install `cloud_sql_proxy` following [this procedure](https://cloud.google.com/sql/docs/mysql/connect-admin-proxy#install) (basically, download the binary and make it executable). Once installed, you can launch the `cloud_sql_proxy` daemon, which will route your local app database traffic to your production GCP SQL database.
 
 ```shell
 ./cloud_sql_proxy -instances="$DQM_CLOUDSQL_CONNECTION_NAME"=tcp:3306 &
@@ -90,9 +102,9 @@ pipenv run python manage.py makemigrations dqm
 pipenv run python manage.py migrate
 ```
 
-#### Updating the app.yaml file
+### Deployment to App Engine
 
-App Engine relies on the `app.yaml` file to configure your app's settings. Just update the `env_variables` section with your values:
+App Engine relies on the `app.yaml` file to configure your app's settings. Update the `env_variables` section with your values:
 
 ```yaml
 #...
@@ -102,8 +114,6 @@ env_variables:
   CLOUDSQL_DATABASE: "dqm"
   DQM_SERVICE_ACCOUNT_FILE_PATH: "key.json"
 ```
-
-#### Deploying
 
 You're now ready to deploy:
 
@@ -117,7 +127,7 @@ gcloud app logs tail -s default
 
 #### Access restriction (recommended)
 
-DQM has not per-user access restriction, but you do so by enabling GCP [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs/app-engine-quickstart).
+DQM has no per-user access restriction, but you do so by enabling GCP [Identity-Aware Proxy (IAP)](https://cloud.google.com/iap/docs/app-engine-quickstart).
 
 
 ## Development
@@ -145,22 +155,12 @@ pipenv run python manage.py test dqm
 
 ### Frontend
 
-Make sure Node.js [npm](https://www.npmjs.com/get-npm) is installed on your local machine, and then:
+Start frontend dev server with:
 
 ```shell
 cd dqm/frontend
-npm install
 npm run serve
 ```
-
-To build the frontend app for deployment, simply run:
-
-```shell
-npm run build
-```
-
-_Note_ – DQM is configured to export the build to `backend/www` (because the frontend build is intended to ship together with the backend to App Engine, where is will be served "statically").
-
 
 ## Roadmap
 
