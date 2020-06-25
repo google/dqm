@@ -128,11 +128,15 @@ def get_url_parameters(view_id,
     }]
   }
   response = service.reports().batchGet(body=query).execute()
-  urls_and_parameters = [{
-    'url': url['dimensions'][0],
-    'params': parse_qs(urlparse.urlparse(url['dimensions'][0]).query)
-    } for url in response['reports'][0]['data']['rows']
-      if '?' in url['dimensions'][0]]
+  try:
+    urls_and_parameters = [{
+      'url': url['dimensions'][0],
+      'params': parse_qs(urlparse.urlparse(url['dimensions'][0]).query)
+      } for url in response['reports'][0]['data']['rows']
+        if '?' in url['dimensions'][0]]
+  except:
+    urls_and_parameters = []
+
   return urls_and_parameters
 
 
@@ -186,8 +190,13 @@ def get_hostnames(view_id,
     }]
   }
   response = service.reports().batchGet(body=query).execute()
-  hosts = [{'host': r['dimensions'][0], 'hits': r['metrics'][0]['values'][0]}
-          for r in response['reports'][0]['data']['rows']]
+
+  try:
+    hosts = [{'host': r['dimensions'][0], 'hits': r['metrics'][0]['values'][0]}
+            for r in response['reports'][0]['data']['rows']]
+  except:
+    hosts = []
+
   return hosts
 
 
