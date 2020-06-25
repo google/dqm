@@ -76,9 +76,12 @@ def ga_accounts(request):
         'enhancedECommerceTracking': (v['enhancedECommerceTracking']
           if 'enhancedECommerceTracking' in v else False),
         'botFilteringEnabled': v['botFilteringEnabled'],
-        'excludeQueryParameters': v['excludeQueryParameters'],
-        'siteSearchQueryParameters': v['siteSearchQueryParameters'],
-        'stripSiteSearchQueryParameters': v['stripSiteSearchQueryParameters'],
+        'excludeQueryParameters': (v['excludeQueryParameters']
+          if 'excludeQueryParameters' in v else False),
+        'siteSearchQueryParameters': (v['siteSearchQueryParameters']
+          if 'siteSearchQueryParameters' in v else False),
+        'stripSiteSearchQueryParameters': (v['stripSiteSearchQueryParameters']
+          if 'stripSiteSearchQueryParameters' in v else False),
       } for v in p['views']]
     } for p in a['webProperties']]
   } for a in ga_accounts]
