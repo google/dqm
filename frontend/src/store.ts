@@ -260,7 +260,7 @@ export default new Vuex.Store({
 
     ui: {
       state: {
-        version: '0.3',
+        version: '0.3.1',
         debug: false,
         feedbackFormUrl: 'https://forms.gle/tZ1A7sPKf1QR4zP26',
         themes: {
@@ -278,7 +278,7 @@ export default new Vuex.Store({
           empty: {label: 'Don\'t know yet, just start with an empty suite!', disabled: false},
           trustful: {label: 'Is my data trustful?', disabled: false},
           insightful: {label: 'Is my data insightful?', disabled: false},
-          monitored: {label: 'Is my data monitoredaa?', disabled: true},
+          monitored: {label: 'Is my data monitored?', disabled: true},
         },
         colors: {
           green: Colors.Green,

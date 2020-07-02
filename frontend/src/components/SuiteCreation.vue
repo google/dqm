@@ -15,7 +15,6 @@
 -->
 
 <template lang="pug">
-
   v-dialog(
     v-model="show"
     persistent
@@ -34,6 +33,7 @@
                   label="Name *"
                   v-model="suiteCreationData.name"
                   :rules="[v => !!v || 'A name is required']"
+                  autofocus
                   required)
 
                 p.mt-7 What is your focus?
@@ -93,7 +93,7 @@
     }),
 
     computed: {
-      templates(): Array<Template> { return this.$store.state.ui.templates },
+      templates(): Array<Template> { return this.$store.state.ui.templates; },
     },
 
     methods: {

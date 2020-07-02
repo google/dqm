@@ -22,7 +22,7 @@ A typical DQM deployment relies on [Google Cloud Platform](https://cloud.google.
 - A GCP project (create one following [this guide](https://cloud.google.com/resource-manager/docs/creating-managing-projects) if needed).
 - The [Google Cloud SDK](https://cloud.google.com/sdk/docs) (command line interface) installed on your local machine.
 - The [pipenv](https://github.com/pypa/pipenv) Python package manager installed on your local machine.
-- The Node.js [npm](https://www.npmjs.com/get-npm) is installed on your local machine.
+- The Node.js [npm](https://www.npmjs.com/get-npm) installed on your local machine.
 
 ### Getting the code
 
@@ -48,13 +48,13 @@ _Note_ – DQM is configured to export the build to `backend/www` (because the f
 Activate required APIs, setup database, create App Engine app and get your service account key file by executing the following commands (replace `[YOUR GCP PROJECT ID]` by your actual project ID):
 
 ```shell
-cd ../backend                                             # Make sure you cd the dqm/backend dir
+cd ../backend
 export gcpproject="[YOUR GCP PROJECT ID]"
 
 gcloud config set project $gcpproject
 gcloud services enable analytics.googleapis.com
 gcloud services enable analyticsreporting.googleapis.com
-gcloud sql instances create dqm                           # --region=REGION; default="us-central"
+gcloud sql instances create dqm --region="europe-west1"
 gcloud sql databases create dqm --instance=dqm
 gcloud sql users create dqmuser --instance=dqm
 gcloud app create
@@ -62,7 +62,7 @@ gcloud iam service-accounts keys create ./key.json \
   --iam-account $gcpproject@appspot.gserviceaccount.com
 ```
 
-_Note_ – Of course, you can change values/names the lines above, but keep in mind that the `key.json` file will have to be deployed to App Engine, so it __must__ stay inside the `backend` dir anyway.
+_Note_ – Of course, you can change values/names in the lines above, but keep in mind that the `key.json` file will have to be deployed to App Engine, so it __must__ stay inside the `backend` dir anyway.
 
 ### Database setup
 
