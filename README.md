@@ -5,6 +5,19 @@ __Please note: this is not an officially supported Google product.__
 Data Quality Manager (aka _DQM_) is a platform dedicated to data quality issues detection, especially in the context of online advertising.
 
 
+## Automated deployment on GCP
+
+A typical DQM deployment relies on [Google Cloud Platform](https://cloud.google.com/gcp/) (GCP) [App Engine](https://cloud.google.com/appengine/).
+
+All you need is to [create a GCP project](https://cloud.google.com/resource-manager/docs/creating-managing-projects), and copy/paste the following command in the Cloud Shell console:
+
+```shell
+wget -qO dqm.py https://raw.githubusercontent.com/google/dqm/master/installer.py && python3 dqm.py
+```
+
+You will be prompted when needed during the process.
+
+
 ## Architecture
 
 DQM is made of two components:
@@ -13,13 +26,11 @@ DQM is made of two components:
 - A __frontend__ (Typescript, VueJS) to allow users to plan/execute/monitor checks.
 
 
-## Installation
-
-A typical DQM deployment relies on [Google Cloud Platform](https://cloud.google.com/gcp/) (GCP) [App Engine](https://cloud.google.com/appengine/). The following setup process will help you deploy DQM on App Engine.
+## Local installation
 
 ### Prerequisites
 
-- A GCP project (create one following [this guide](https://cloud.google.com/resource-manager/docs/creating-managing-projects) if needed).
+- A GCP project.
 - The [Google Cloud SDK](https://cloud.google.com/sdk/docs) (command line interface) installed on your local machine.
 - The [pipenv](https://github.com/pypa/pipenv) Python package manager installed on your local machine.
 - The Node.js [npm](https://www.npmjs.com/get-npm) installed on your local machine.
