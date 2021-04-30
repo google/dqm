@@ -19,7 +19,7 @@ pyasn1==0.4.8
 pymysql==0.9.3
 pytz==2020.1
 requests==2.24.0
-rsa==4.6; python_version >= '3'
+rsa==4.7; python_version >= '3'
 six==1.15.0; python_version != '3.2.*'
 sqlparse==0.3.1; python_version != '3.1.*'
 uritemplate==3.0.1; python_version != '3.2.*'
