@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-Django = "==3.0.7"
+Django = "==3.1.12"
 PyMySQL = "==0.9.3"
 django-cors-headers = "==3.4.0"
 google-api-python-client = "==1.9.3"
